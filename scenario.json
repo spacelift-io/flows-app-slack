@@ -1,0 +1,5165 @@
+{
+  "name": "Slack Test",
+  "blocks": [
+    {
+      "id": "appEntity_0",
+      "nameComponent": {
+        "name": "App Mention Subscription",
+        "description": ""
+      },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 205
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "appMentionSubscription",
+        "schema": {
+          "order": 8,
+          "name": "App Mention Subscription",
+          "category": "Messaging",
+          "description": "Subscribes to @mentions of this Slack app in any channel it's a member of.",
+          "config": {},
+          "hasOnInternalMessage": true,
+          "inputs": {},
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "On App Mention",
+              "description": "Emitted when the app is mentioned. Contains the Slack app_mention event payload.",
+              "default": true,
+              "possiblePrimaryParents": [],
+              "type": {
+                "description": "Payload of a Slack 'app_mention' event. See https://api.slack.com/events/app_mention for more details.",
+                "properties": {
+                  "app_id": {
+                    "description": "The ID of the application that is being mentioned (i.e., this app).",
+                    "type": "string"
+                  },
+                  "blocks": {
+                    "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                    "items": {
+                      "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "bot_id": {
+                    "description": "Optional. The bot ID, if the message that caused the mention was posted by a bot user. Not typically present for app_mention events triggered by human users mentioning the app.",
+                    "type": "string"
+                  },
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "channel_type": {
+                    "description": "Indicates the type of channel: 'channel' (public), 'group' (private), 'im' (direct message), 'mpim' (multi-person direct message).",
+                    "type": "string"
+                  },
+                  "client_msg_id": {
+                    "description": "A unique identifier for the message, sent by the client. Only present for user-posted messages that trigger the mention.",
+                    "type": "string"
+                  },
+                  "event_ts": {
+                    "description": "The timestamp of when an event was dispatched by Slack. It's often very close to the message's own 'ts'.",
+                    "type": "string"
+                  },
+                  "parent_user_id": {
+                    "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                    "type": "string"
+                  },
+                  "team": {
+                    "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                    "type": "string"
+                  },
+                  "thread_ts": {
+                    "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "The specific type of event. For this block, it will always be 'app_mention'.",
+                    "enum": ["app_mention"],
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "ID of a Slack user (e.g., U0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "text",
+                  "ts",
+                  "channel",
+                  "event_ts",
+                  "team",
+                  "app_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": []
+        }
+      }
+    },
+    {
+      "id": "appEntity_1",
+      "nameComponent": { "name": "Echo", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 390
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendTextMessage",
+        "schema": {
+          "order": 1,
+          "name": "Send Text Message",
+          "category": "Messaging",
+          "description": "Sends a simple markdown-formatted text message to a Slack channel or user. Can optionally be a thread reply.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel or User ID",
+                  "description": "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 1,
+                  "name": "Message Text",
+                  "description": "The text of the message. Markdown is supported by default.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "threadTs": {
+                  "order": 2,
+                  "name": "Thread Timestamp",
+                  "description": "If replying to a message, provide the 'ts' (timestamp) of the parent message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the message has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The complete message object as returned by Slack's chat.postMessage API. Contains details about the message that was posted.",
+                    "properties": {
+                      "app_id": {
+                        "description": "ID of a Slack App (e.g., A0123ABC).",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                        "items": {
+                          "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "ID of a bot user (e.g., B0123ABC).",
+                        "type": "string"
+                      },
+                      "bot_profile": {
+                        "description": "Profile information for the bot user that posted the message.",
+                        "properties": {
+                          "app_id": {
+                            "description": "The App ID associated with this bot (same as the outer app_id if present).",
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "description": "Indicates if the bot user is deleted.",
+                            "type": "boolean"
+                          },
+                          "icons": {
+                            "description": "URLs for the bot's avatar images.",
+                            "properties": {
+                              "image_36": {
+                                "description": "URL for 36x36px icon.",
+                                "type": "string"
+                              },
+                              "image_48": {
+                                "description": "URL for 48x48px icon.",
+                                "type": "string"
+                              },
+                              "image_72": {
+                                "description": "URL for 72x72px icon.",
+                                "type": "string"
+                              }
+                            },
+                            "required": ["image_36", "image_48", "image_72"],
+                            "type": "object"
+                          },
+                          "id": {
+                            "description": "Bot ID (same as the outer bot_id if present).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Display name of the bot.",
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "description": "The Team ID (workspace ID) this bot belongs to (same as the outer team if present).",
+                            "type": "string"
+                          },
+                          "updated": {
+                            "description": "Timestamp (Unix epoch) of the last profile update.",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "deleted",
+                          "name",
+                          "updated",
+                          "app_id",
+                          "icons",
+                          "team_id"
+                        ],
+                        "type": "object"
+                      },
+                      "parent_user_id": {
+                        "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "Optional. Indicates a subtype of message, e.g., 'bot_message'. For messages sent by this block, it's often 'bot_message'.",
+                        "type": "string"
+                      },
+                      "team": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "text": {
+                        "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                        "type": "string"
+                      },
+                      "thread_ts": {
+                        "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the object, always 'message'.",
+                        "enum": ["message"],
+                        "type": "string"
+                      },
+                      "user": {
+                        "description": "The user ID of the sender. For messages sent by a bot token, this is the bot's user ID.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "ts",
+                      "text",
+                      "user",
+                      "bot_id",
+                      "app_id",
+                      "team",
+                      "bot_profile"
+                    ],
+                    "type": "object"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel", "message"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.appMentionSubscription.channel"
+                },
+                "text": {
+                  "code": "(function() {\n  const fullText = outputs.appMentionSubscription.text;\n  \n  // The mention format is usually \u003c@APP_ID\u003e with a space after it\n  // We'll find the first occurrence of \"\u003e\" and take everything after that\n  const mentionEndIndex = fullText.indexOf('\u003e');\n  \n  if (mentionEndIndex !== -1) {\n    // Extract everything after the mention, trim any leading whitespace\n    return fullText.substring(mentionEndIndex + 1).trim();\n  } else {\n    // If no mention pattern is found, return the original text\n    return fullText;\n  }\n}())"
+                },
+                "threadTs": {
+                  "code": "outputs.appMentionSubscription.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_2",
+      "nameComponent": { "name": "Create Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 213
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "createChannel",
+        "schema": {
+          "order": 15,
+          "name": "Create Channel",
+          "category": "Channels",
+          "description": "Creates a new Slack channel (public or private).",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Create",
+              "description": "Trigger creating a new channel.",
+              "config": {
+                "isPrivate": {
+                  "order": 1,
+                  "name": "Private Channel",
+                  "description": "If true, creates a private channel. If false, creates a public channel.",
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "default": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "name": {
+                  "order": 0,
+                  "name": "Channel Name",
+                  "description": "Name of the channel to create. Must be lowercase, without spaces or periods, and shorter than 22 characters.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Created",
+              "description": "Emitted when the channel has been successfully created.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The created channel object.",
+                    "properties": {
+                      "created": {
+                        "description": "Unix timestamp when the channel was created.",
+                        "type": "number"
+                      },
+                      "creator": {
+                        "description": "ID of a Slack user (e.g., U0123ABC).",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "is_channel": {
+                        "description": "True if this is a public channel.",
+                        "type": "boolean"
+                      },
+                      "is_group": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "is_private": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "description": "The name of the created channel.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "is_channel",
+                      "is_group",
+                      "is_private",
+                      "created",
+                      "creator"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "isPrivate": {
+                  "code": "true"
+                },
+                "name": {
+                  "code": "\"test-channel-\" + Math.random().toString(36).substring(2, 10)"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_3",
+      "nameComponent": { "name": "Variables", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 0,
+          "y": 200
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "01971256-7ed8-7e2d-b223-f4d224526585",
+        "blockKey": "variables",
+        "schema": {
+          "order": 0,
+          "name": "Variables",
+          "category": "Testing",
+          "description": "A block that creates signals from a variables configuration object.",
+          "config": {
+            "variables": {
+              "order": 0,
+              "name": "Variables",
+              "description": "A JSON object where each field will become a signal with the field's value.",
+              "type": {
+                "description": "An object containing key-value pairs that will be converted to signals",
+                "type": "object"
+              },
+              "fixed": false,
+              "required": true,
+              "default": {},
+              "hasValidator": false,
+              "fieldKey": ""
+            }
+          },
+          "hasOnInternalMessage": false,
+          "inputs": {},
+          "outputs": {},
+          "signals": {},
+          "hasOnSync": true,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {
+          "variables": {
+            "code": "{\n  \"userId\": \"U03ECMT166B\"\n}"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [],
+        "appBlock": {
+          "inputs": []
+        }
+      },
+      "lifecycleComponent": {}
+    },
+    {
+      "id": "appEntity_4",
+      "nameComponent": { "name": "Invite Users to Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 359
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "inviteUsersToChannel",
+        "schema": {
+          "order": 21,
+          "name": "Invite Users to Channel",
+          "category": "Channels",
+          "description": "Invites users to a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Invite",
+              "description": "Trigger inviting users to the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to invite users to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "users": {
+                  "order": 1,
+                  "name": "User IDs",
+                  "description": "Array of user IDs (e.g., [\"U0123ABC\", \"U0456DEF\"]) to invite to the channel.",
+                  "type": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Users Invited",
+              "description": "Emitted when users have been successfully invited to the channel.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The channel object.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the channel.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id"],
+                    "type": "object"
+                  },
+                  "users": {
+                    "description": "Array of user IDs that were invited.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": ["channel", "users"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                },
+                "users": {
+                  "code": "[ref(\"signal.variables.userId\")]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_5",
+      "nameComponent": { "name": "Kick Users from Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 488
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "kickUsersFromChannel",
+        "schema": {
+          "order": 22,
+          "name": "Kick Users from Channel",
+          "category": "Channels",
+          "description": "Removes users from a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Kick",
+              "description": "Trigger removing users from the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to remove users from.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "user": {
+                  "order": 1,
+                  "name": "User ID",
+                  "description": "User ID (e.g., U0123ABC) to remove from the channel.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "User Removed",
+              "description": "Emitted when the user has been successfully removed from the channel.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "ID of a Slack user (e.g., U0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "user"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                },
+                "user": {
+                  "code": "ref(\"signal.variables.userId\")"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_6",
+      "nameComponent": { "name": "Invite Users to Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 810
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "inviteUsersToChannel",
+        "schema": {
+          "order": 21,
+          "name": "Invite Users to Channel",
+          "category": "Channels",
+          "description": "Invites users to a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Invite",
+              "description": "Trigger inviting users to the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to invite users to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "users": {
+                  "order": 1,
+                  "name": "User IDs",
+                  "description": "Array of user IDs (e.g., [\"U0123ABC\", \"U0456DEF\"]) to invite to the channel.",
+                  "type": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Users Invited",
+              "description": "Emitted when users have been successfully invited to the channel.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The channel object.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the channel.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id"],
+                    "type": "object"
+                  },
+                  "users": {
+                    "description": "Array of user IDs that were invited.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": ["channel", "users"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                },
+                "users": {
+                  "code": "[ref(\"signal.variables.userId\")]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_7",
+      "nameComponent": { "name": "Get Channel Info", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 948
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "getChannelInfo",
+        "schema": {
+          "order": 18,
+          "name": "Get Channel Info",
+          "category": "Channels",
+          "description": "Gets information about a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Get",
+              "description": "Trigger getting information about the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to get information about.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Info Retrieved",
+              "description": "Emitted when channel information has been successfully retrieved.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The channel object with detailed information.",
+                    "properties": {
+                      "created": {
+                        "description": "Unix timestamp when the channel was created.",
+                        "type": "number"
+                      },
+                      "creator": {
+                        "description": "ID of a Slack user (e.g., U0123ABC).",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "is_archived": {
+                        "description": "True if the channel is archived.",
+                        "type": "boolean"
+                      },
+                      "is_channel": {
+                        "description": "True if this is a public channel.",
+                        "type": "boolean"
+                      },
+                      "is_general": {
+                        "description": "True if this is the general channel.",
+                        "type": "boolean"
+                      },
+                      "is_group": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "is_im": {
+                        "description": "True if this is a direct message.",
+                        "type": "boolean"
+                      },
+                      "is_private": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "description": "The name of the channel.",
+                        "type": "string"
+                      },
+                      "num_members": {
+                        "description": "Number of members in the channel.",
+                        "type": "number"
+                      },
+                      "purpose": {
+                        "description": "Channel purpose information.",
+                        "properties": {
+                          "creator": {
+                            "description": "ID of a Slack user (e.g., U0123ABC).",
+                            "type": "string"
+                          },
+                          "last_set": {
+                            "description": "Unix timestamp when purpose was last set.",
+                            "type": "number"
+                          },
+                          "value": {
+                            "description": "The purpose text.",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "topic": {
+                        "description": "Channel topic information.",
+                        "properties": {
+                          "creator": {
+                            "description": "ID of a Slack user (e.g., U0123ABC).",
+                            "type": "string"
+                          },
+                          "last_set": {
+                            "description": "Unix timestamp when topic was last set.",
+                            "type": "number"
+                          },
+                          "value": {
+                            "description": "The topic text.",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "is_channel",
+                      "is_group",
+                      "is_im",
+                      "is_private",
+                      "is_archived",
+                      "created"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_8",
+      "nameComponent": { "name": "Set Channel Purpose", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 1092
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "setChannelPurpose",
+        "schema": {
+          "order": 20,
+          "name": "Set Channel Purpose",
+          "category": "Channels",
+          "description": "Sets the purpose for a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Set",
+              "description": "Trigger setting the purpose for the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to set the purpose for.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "purpose": {
+                  "order": 1,
+                  "name": "Purpose",
+                  "description": "The new purpose for the channel.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Purpose Set",
+              "description": "Emitted when the channel purpose has been successfully set.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "description": "The purpose that was set for the channel.",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "purpose"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                },
+                "purpose": {
+                  "code": "\"the purpose is papaya\""
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_9",
+      "nameComponent": { "name": "Set Channel Topic", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 1228
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "setChannelTopic",
+        "schema": {
+          "order": 19,
+          "name": "Set Channel Topic",
+          "category": "Channels",
+          "description": "Sets the topic for a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Set",
+              "description": "Trigger setting the topic for the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to set the topic for.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "topic": {
+                  "order": 1,
+                  "name": "Topic",
+                  "description": "The new topic for the channel.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Topic Set",
+              "description": "Emitted when the channel topic has been successfully set.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "topic": {
+                    "description": "The topic that was set for the channel.",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "topic"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                },
+                "topic": {
+                  "code": "\"the topic is papaya\""
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_10",
+      "nameComponent": { "name": "Archive Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 1365
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "archiveChannel",
+        "schema": {
+          "order": 16,
+          "name": "Archive Channel",
+          "category": "Channels",
+          "description": "Archives a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Archive",
+              "description": "Trigger archiving the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to archive.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Archived",
+              "description": "Emitted when the channel has been successfully archived.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_11",
+      "nameComponent": { "name": "Unarchive Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 1507
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "unarchiveChannel",
+        "schema": {
+          "order": 17,
+          "name": "Unarchive Channel",
+          "category": "Channels",
+          "description": "Unarchives a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Unarchive",
+              "description": "Trigger unarchiving the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to unarchive.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Unarchived",
+              "description": "Emitted when the channel has been successfully unarchived.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_12",
+      "nameComponent": { "name": "Archive Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 1654
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "archiveChannel",
+        "schema": {
+          "order": 16,
+          "name": "Archive Channel",
+          "category": "Channels",
+          "description": "Archives a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Archive",
+              "description": "Trigger archiving the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to archive.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Archived",
+              "description": "Emitted when the channel has been successfully archived.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_13",
+      "nameComponent": {
+        "name": "Unarchive Channel",
+        "description": "When all users are removed (via the kick action) the channel is automatically archived, so we need to undo that"
+      },
+      "positionComponent": {
+        "position": {
+          "x": 757,
+          "y": 662
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "unarchiveChannel",
+        "schema": {
+          "order": 17,
+          "name": "Unarchive Channel",
+          "category": "Channels",
+          "description": "Unarchives a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Unarchive",
+              "description": "Trigger unarchiving the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to unarchive.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Unarchived",
+              "description": "Emitted when the channel has been successfully unarchived.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_14",
+      "nameComponent": { "name": "Messages Subscription", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 359
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "messagesSubscription",
+        "schema": {
+          "order": 7,
+          "name": "Messages Subscription",
+          "category": "Messaging",
+          "description": "Subscribes to messages in Slack channels, optionally filtered by specific channel.",
+          "config": {
+            "channelId": {
+              "order": 0,
+              "name": "Channel ID (Optional)",
+              "description": "If specified, only messages from this channel will be received. Leave empty to receive messages from all channels the app has access to.",
+              "type": {
+                "type": "string"
+              },
+              "fixed": false,
+              "required": false,
+              "hasValidator": false,
+              "fieldKey": ""
+            }
+          },
+          "hasOnInternalMessage": true,
+          "inputs": {},
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "On Message",
+              "description": "Emitted when a message is posted. Contains the Slack message event payload.",
+              "default": true,
+              "possiblePrimaryParents": [],
+              "type": {
+                "description": "Payload of a Slack 'message' event. See https://api.slack.com/events/message for more details.",
+                "properties": {
+                  "app_id": {
+                    "description": "Optional. The ID of the application that posted the message, if posted by a bot/app.",
+                    "type": "string"
+                  },
+                  "blocks": {
+                    "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                    "items": {
+                      "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "bot_id": {
+                    "description": "Optional. The bot ID, if the message was posted by a bot user.",
+                    "type": "string"
+                  },
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "channel_type": {
+                    "description": "Indicates the type of channel: 'channel' (public), 'group' (private), 'im' (direct message), 'mpim' (multi-person direct message).",
+                    "type": "string"
+                  },
+                  "client_msg_id": {
+                    "description": "A unique identifier for the message, sent by the client. Only present for user-posted messages.",
+                    "type": "string"
+                  },
+                  "event_ts": {
+                    "description": "The timestamp of when an event was dispatched by Slack. It's often very close to the message's own 'ts'.",
+                    "type": "string"
+                  },
+                  "parent_user_id": {
+                    "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                    "type": "string"
+                  },
+                  "subtype": {
+                    "description": "Optional. Indicates a subtype of message, e.g., 'bot_message', 'channel_join', etc.",
+                    "type": "string"
+                  },
+                  "team": {
+                    "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                    "type": "string"
+                  },
+                  "thread_ts": {
+                    "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "The specific type of event. For this block, it will always be 'message'.",
+                    "enum": ["message"],
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "ID of a Slack user (e.g., U0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "text",
+                  "ts",
+                  "channel",
+                  "event_ts",
+                  "team"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {
+          "channelId": {
+            "code": "ref(\"signal.captureTestChannel.value\")"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": []
+        }
+      }
+    },
+    {
+      "id": "appEntity_15",
+      "nameComponent": { "name": "Create Test Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 0
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "createChannel",
+        "schema": {
+          "order": 15,
+          "name": "Create Channel",
+          "category": "Channels",
+          "description": "Creates a new Slack channel (public or private).",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Create",
+              "description": "Trigger creating a new channel.",
+              "config": {
+                "isPrivate": {
+                  "order": 1,
+                  "name": "Private Channel",
+                  "description": "If true, creates a private channel. If false, creates a public channel.",
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "default": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "name": {
+                  "order": 0,
+                  "name": "Channel Name",
+                  "description": "Name of the channel to create. Must be lowercase, without spaces or periods, and shorter than 22 characters.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Channel Created",
+              "description": "Emitted when the channel has been successfully created.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The created channel object.",
+                    "properties": {
+                      "created": {
+                        "description": "Unix timestamp when the channel was created.",
+                        "type": "number"
+                      },
+                      "creator": {
+                        "description": "ID of a Slack user (e.g., U0123ABC).",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "is_channel": {
+                        "description": "True if this is a public channel.",
+                        "type": "boolean"
+                      },
+                      "is_group": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "is_private": {
+                        "description": "True if this is a private channel.",
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "description": "The name of the created channel.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "is_channel",
+                      "is_group",
+                      "is_private",
+                      "created",
+                      "creator"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": ["channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "isPrivate": {
+                  "code": "true"
+                },
+                "name": {
+                  "code": "\"test-sandbox-channel-\" + Math.random().toString(36).substring(2, 10)"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_16",
+      "nameComponent": { "name": "Capture Test Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 131
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "01971256-7ed8-7e2d-b223-f4d224526585",
+        "blockKey": "capture",
+        "schema": {
+          "order": 1,
+          "name": "Capture",
+          "category": "Testing",
+          "description": "Captures the last event received and makes it available as an exported key value",
+          "config": {
+            "defaultValue": {
+              "order": 0,
+              "name": "Default value",
+              "description": "Default value to use when no event has been captured yet",
+              "type": {},
+              "fixed": false,
+              "required": false,
+              "default": {},
+              "hasValidator": false,
+              "fieldKey": ""
+            }
+          },
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "config": {
+                "value": {
+                  "order": 0,
+                  "name": "Value to export",
+                  "description": "",
+                  "type": {},
+                  "fixed": false,
+                  "required": true,
+                  "default": {},
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {},
+          "signals": {},
+          "hasOnSync": true,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {
+          "defaultValue": {
+            "code": "null"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "value": {
+                  "code": "outputs.createTestChannel.channel.id"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "lifecycleComponent": {}
+    },
+    {
+      "id": "appEntity_17",
+      "nameComponent": { "name": "Invite Users to Channel", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1488,
+          "y": 131
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "inviteUsersToChannel",
+        "schema": {
+          "order": 21,
+          "name": "Invite Users to Channel",
+          "category": "Channels",
+          "description": "Invites users to a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Invite",
+              "description": "Trigger inviting users to the specified channel.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to invite users to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "users": {
+                  "order": 1,
+                  "name": "User IDs",
+                  "description": "Array of user IDs (e.g., [\"U0123ABC\", \"U0456DEF\"]) to invite to the channel.",
+                  "type": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Users Invited",
+              "description": "Emitted when users have been successfully invited to the channel.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "The channel object.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name of the channel.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id"],
+                    "type": "object"
+                  },
+                  "users": {
+                    "description": "Array of user IDs that were invited.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": ["channel", "users"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.createTestChannel.channel.id"
+                },
+                "users": {
+                  "code": "[ref(\"signal.variables.userId\")]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_18",
+      "nameComponent": { "name": "Add Reaction", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 488
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "addReaction",
+        "schema": {
+          "order": 9,
+          "name": "Add Reaction",
+          "category": "Reactions",
+          "description": "Adds a reaction (emoji) to a specific message in a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Add",
+              "description": "Trigger adding a reaction to the specified message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) containing the message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "name": {
+                  "order": 2,
+                  "name": "Reaction Name",
+                  "description": "The emoji name to add as a reaction (without colons, e.g., 'thumbsup', 'heart').",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "ts": {
+                  "order": 1,
+                  "name": "Message Timestamp",
+                  "description": "The timestamp (ts) of the message to add a reaction to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Reaction Added",
+              "description": "Emitted when the reaction has been successfully added.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "reaction": {
+                    "description": "The emoji name that was added as a reaction.",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "ts", "reaction", "ok"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.messagesSubscription.channel"
+                },
+                "name": {
+                  "code": "\"robot_face\""
+                },
+                "ts": {
+                  "code": "outputs.messagesSubscription.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_19",
+      "nameComponent": { "name": "Reactions Subscription", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1488,
+          "y": 359
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "reactionsSubscription",
+        "schema": {
+          "order": 12,
+          "name": "Reactions Subscription",
+          "category": "Reactions",
+          "description": "Subscribes to reaction add and remove events on Slack messages.",
+          "config": {},
+          "hasOnInternalMessage": true,
+          "inputs": {},
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "On Reaction",
+              "description": "Emitted when a reaction is added or removed. Contains the Slack reaction event payload.",
+              "default": true,
+              "possiblePrimaryParents": [],
+              "type": {
+                "description": "Payload of a Slack 'reaction_added' or 'reaction_removed' event. See https://api.slack.com/events/reaction_added and https://api.slack.com/events/reaction_removed for more details.",
+                "properties": {
+                  "event_ts": {
+                    "description": "The timestamp of when an event was dispatched by Slack. It's often very close to the message's own 'ts'.",
+                    "type": "string"
+                  },
+                  "item": {
+                    "description": "Information about the item that was reacted to.",
+                    "properties": {
+                      "channel": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of item (typically 'message').",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["type", "channel", "ts"],
+                    "type": "object"
+                  },
+                  "item_user": {
+                    "description": "The user ID of the author of the message that was reacted to.",
+                    "type": "string"
+                  },
+                  "reaction": {
+                    "description": "The emoji name of the reaction (without colons, e.g., 'thumbsup').",
+                    "type": "string"
+                  },
+                  "team": {
+                    "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "The specific type of event. Will be either 'reaction_added' or 'reaction_removed'.",
+                    "enum": ["reaction_added", "reaction_removed"],
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "ID of a Slack user (e.g., U0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "reaction",
+                  "item_user",
+                  "item",
+                  "event_ts",
+                  "team"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": []
+        }
+      }
+    },
+    {
+      "id": "appEntity_20",
+      "nameComponent": { "name": "Auth Metadata", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 0,
+          "y": 385
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "authMetadata",
+        "schema": {
+          "order": 0,
+          "name": "Auth Metadata",
+          "category": "Auth",
+          "description": "Gets authentication metadata for the configured bot token, including team and user information.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {},
+          "outputs": {},
+          "signals": {
+            "bot_id": {
+              "order": 5,
+              "name": "Bot ID",
+              "description": "The bot ID (only present for bot tokens)."
+            },
+            "team": {
+              "order": 1,
+              "name": "Workspace Name",
+              "description": "The workspace name."
+            },
+            "team_id": {
+              "order": 3,
+              "name": "Workspace ID",
+              "description": "The workspace ID."
+            },
+            "url": {
+              "order": 0,
+              "name": "Workspace URL",
+              "description": "The workspace URL."
+            },
+            "user": {
+              "order": 2,
+              "name": "User Name",
+              "description": "The authenticated user's name (typically 'bot' for bot tokens)."
+            },
+            "user_id": {
+              "order": 4,
+              "name": "User ID",
+              "description": "The authenticated user's ID."
+            }
+          },
+          "hasOnSync": true,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [],
+        "appBlock": {
+          "inputs": []
+        }
+      },
+      "lifecycleComponent": {}
+    },
+    {
+      "id": "condition_0",
+      "nameComponent": { "name": "Condition", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1488,
+          "y": 488
+        }
+      },
+      "coreEntityComponent": {
+        "condition": {
+          "conditionExpr": {
+            "code": "outputs.reactionsSubscription.user !== ref(\"signal.authMetadata.user_id\")"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "then",
+            "outputCustomizationExpr": null
+          },
+          {
+            "outputKey": "else",
+            "outputCustomizationExpr": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "appEntity_21",
+      "nameComponent": {
+        "name": "Reaction Response Message",
+        "description": "Sends a message to the same channel where a reaction was added, acknowledging the reaction with its name."
+      },
+      "positionComponent": {
+        "position": {
+          "x": 1488,
+          "y": 742
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendTextMessage",
+        "schema": {
+          "order": 1,
+          "name": "Send Text Message",
+          "category": "Messaging",
+          "description": "Sends a simple markdown-formatted text message to a Slack channel or user. Can optionally be a thread reply.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel or User ID",
+                  "description": "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 1,
+                  "name": "Message Text",
+                  "description": "The text of the message. Markdown is supported by default.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "threadTs": {
+                  "order": 2,
+                  "name": "Thread Timestamp",
+                  "description": "If replying to a message, provide the 'ts' (timestamp) of the parent message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the message has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The complete message object as returned by Slack's chat.postMessage API. Contains details about the message that was posted.",
+                    "properties": {
+                      "app_id": {
+                        "description": "ID of a Slack App (e.g., A0123ABC).",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                        "items": {
+                          "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "ID of a bot user (e.g., B0123ABC).",
+                        "type": "string"
+                      },
+                      "bot_profile": {
+                        "description": "Profile information for the bot user that posted the message.",
+                        "properties": {
+                          "app_id": {
+                            "description": "The App ID associated with this bot (same as the outer app_id if present).",
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "description": "Indicates if the bot user is deleted.",
+                            "type": "boolean"
+                          },
+                          "icons": {
+                            "description": "URLs for the bot's avatar images.",
+                            "properties": {
+                              "image_36": {
+                                "description": "URL for 36x36px icon.",
+                                "type": "string"
+                              },
+                              "image_48": {
+                                "description": "URL for 48x48px icon.",
+                                "type": "string"
+                              },
+                              "image_72": {
+                                "description": "URL for 72x72px icon.",
+                                "type": "string"
+                              }
+                            },
+                            "required": ["image_36", "image_48", "image_72"],
+                            "type": "object"
+                          },
+                          "id": {
+                            "description": "Bot ID (same as the outer bot_id if present).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Display name of the bot.",
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "description": "The Team ID (workspace ID) this bot belongs to (same as the outer team if present).",
+                            "type": "string"
+                          },
+                          "updated": {
+                            "description": "Timestamp (Unix epoch) of the last profile update.",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "deleted",
+                          "name",
+                          "updated",
+                          "app_id",
+                          "icons",
+                          "team_id"
+                        ],
+                        "type": "object"
+                      },
+                      "parent_user_id": {
+                        "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "Optional. Indicates a subtype of message, e.g., 'bot_message'. For messages sent by this block, it's often 'bot_message'.",
+                        "type": "string"
+                      },
+                      "team": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "text": {
+                        "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                        "type": "string"
+                      },
+                      "thread_ts": {
+                        "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the object, always 'message'.",
+                        "enum": ["message"],
+                        "type": "string"
+                      },
+                      "user": {
+                        "description": "The user ID of the sender. For messages sent by a bot token, this is the bot's user ID.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "ts",
+                      "text",
+                      "user",
+                      "bot_id",
+                      "app_id",
+                      "team",
+                      "bot_profile"
+                    ],
+                    "type": "object"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel", "message"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.reactionsSubscription.item.channel"
+                },
+                "text": {
+                  "code": "`Reaction seen! ${outputs.reactionsSubscription.reaction}; Summary of reactions: ${JSON.stringify(outputs.getReactions.message.reactions)}`"
+                },
+                "threadTs": {
+                  "code": "outputs.reactionsSubscription.item.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_22",
+      "nameComponent": { "name": "Remove Reaction", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 742
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "removeReaction",
+        "schema": {
+          "order": 10,
+          "name": "Remove Reaction",
+          "category": "Reactions",
+          "description": "Removes a reaction (emoji) from a specific message in a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Remove",
+              "description": "Trigger removing a reaction from the specified message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) containing the message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "name": {
+                  "order": 2,
+                  "name": "Reaction Name",
+                  "description": "The emoji name to remove as a reaction (without colons, e.g., 'thumbsup', 'heart').",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "ts": {
+                  "order": 1,
+                  "name": "Message Timestamp",
+                  "description": "The timestamp (ts) of the message to remove a reaction from.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Reaction Removed",
+              "description": "Emitted when the reaction has been successfully removed.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "reaction": {
+                    "description": "The emoji name that was removed as a reaction.",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "ts", "reaction"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.addReaction.channel"
+                },
+                "name": {
+                  "code": "outputs.addReaction.reaction"
+                },
+                "ts": {
+                  "code": "outputs.addReaction.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sleep_0",
+      "nameComponent": { "name": "Sleep", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1214,
+          "y": 614
+        }
+      },
+      "coreEntityComponent": {
+        "sleep": {
+          "sleepExpr": {
+            "code": "3"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "appEntity_23",
+      "nameComponent": { "name": "Get Reactions", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 1488,
+          "y": 614
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "getReactions",
+        "schema": {
+          "order": 11,
+          "name": "Get Reactions",
+          "category": "Reactions",
+          "description": "Gets all reactions for a specific message in a Slack channel.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Get",
+              "description": "Trigger getting reactions for the specified message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) containing the message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "full": {
+                  "order": 2,
+                  "name": "Full Details",
+                  "description": "If true, returns full reaction details including user lists. If false, returns only reaction counts.",
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "ts": {
+                  "order": 1,
+                  "name": "Message Timestamp",
+                  "description": "The timestamp (ts) of the message to get reactions for.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Reactions Retrieved",
+              "description": "Emitted when reactions have been successfully retrieved.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The message object with its reactions.",
+                    "properties": {
+                      "reactions": {
+                        "description": "Array of reaction objects on this message.",
+                        "items": {
+                          "properties": {
+                            "count": {
+                              "description": "Number of users who reacted with this emoji.",
+                              "type": "number"
+                            },
+                            "name": {
+                              "description": "The emoji name (without colons).",
+                              "type": "string"
+                            },
+                            "users": {
+                              "description": "Array of user IDs who reacted (if full=true).",
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            }
+                          },
+                          "required": ["name", "count"],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["ts"],
+                    "type": "object"
+                  },
+                  "type": {
+                    "description": "Type of the item (typically 'message').",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "message", "type"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.reactionsSubscription.item.channel"
+                },
+                "ts": {
+                  "code": "outputs.reactionsSubscription.item.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_24",
+      "nameComponent": {
+        "name": "Send Message With Interactions",
+        "description": ""
+      },
+      "positionComponent": {
+        "position": {
+          "x": 1916,
+          "y": 359
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendMessageWithInteractions",
+        "schema": {
+          "order": 6,
+          "name": "Send Message With Interactions",
+          "category": "Messaging",
+          "description": "Sends a message with Block Kit blocks to a Slack channel and listens for user interactions (button clicks, menu selections, etc.). Has two outputs: one when the message is sent, and one for each interaction.",
+          "config": {},
+          "hasOnInternalMessage": true,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the interactive message.",
+              "config": {
+                "blocks": {
+                  "order": 1,
+                  "name": "Message Blocks",
+                  "description": "The Slack Block Kit blocks to include in the message, as a JSON array. May contain interactive elements like buttons, select menus, etc.",
+                  "type": {
+                    "items": {
+                      "description": "A Slack Block Kit block object.",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel or User ID",
+                  "description": "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 2,
+                  "name": "Fallback Text",
+                  "description": "Fallback text to display in notifications and for accessibility. Should summarize the content of your blocks.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "threadTs": {
+                  "order": 3,
+                  "name": "Thread Timestamp",
+                  "description": "If replying to a message, provide the 'ts' (timestamp) of the parent message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "interaction": {
+              "order": 1,
+              "name": "Interaction Received",
+              "description": "Emitted when a user interacts with the message (clicks button, selects from menu, etc.).",
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "description": "Slack interaction payload containing details about the user action.",
+                "properties": {
+                  "actions": {
+                    "description": "Array of actions that were triggered.",
+                    "items": {
+                      "description": "Details about the specific action (button click, menu selection, etc.).",
+                      "properties": {
+                        "action_id": {
+                          "description": "The action_id of the element that was triggered.",
+                          "type": "string"
+                        },
+                        "action_ts": {
+                          "description": "Timestamp when the action occurred.",
+                          "type": "string"
+                        },
+                        "block_id": {
+                          "description": "The block_id of the block containing the triggered element.",
+                          "type": "string"
+                        },
+                        "selected_channel": {
+                          "description": "The selected channel ID (for channels_select).",
+                          "type": "string"
+                        },
+                        "selected_channels": {
+                          "description": "The selected channel IDs (for multi_channels_select).",
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "selected_conversation": {
+                          "description": "The selected conversation ID (for conversations_select).",
+                          "type": "string"
+                        },
+                        "selected_conversations": {
+                          "description": "The selected conversation IDs (for multi_conversations_select).",
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "selected_date": {
+                          "description": "The selected date (for datepicker, format: YYYY-MM-DD).",
+                          "type": "string"
+                        },
+                        "selected_option": {
+                          "description": "The selected option (for single select menus).",
+                          "properties": {
+                            "text": {
+                              "properties": {
+                                "text": {
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "type": "string"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "selected_options": {
+                          "description": "The selected options (for multi-select menus).",
+                          "items": {
+                            "properties": {
+                              "text": {
+                                "properties": {
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "type": {
+                                    "type": "string"
+                                  }
+                                },
+                                "type": "object"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "selected_time": {
+                          "description": "The selected time (for timepicker, format: HH:MM).",
+                          "type": "string"
+                        },
+                        "selected_user": {
+                          "description": "The selected user ID (for users_select).",
+                          "type": "string"
+                        },
+                        "selected_users": {
+                          "description": "The selected user IDs (for multi_users_select).",
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "text": {
+                          "description": "Text object for elements like buttons.",
+                          "properties": {
+                            "emoji": {
+                              "type": "boolean"
+                            },
+                            "text": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "enum": ["plain_text", "mrkdwn"],
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": {
+                          "description": "The type of action (e.g., 'button', 'static_select', 'users_select', 'conversations_select', 'channels_select', 'external_select', 'overflow', 'datepicker', 'timepicker', 'radio_buttons', 'checkboxes').",
+                          "type": "string"
+                        },
+                        "value": {
+                          "description": "The value of the action (for buttons and overflow menus).",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "action_id",
+                        "block_id",
+                        "type",
+                        "action_ts"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "channel": {
+                    "description": "Information about the channel where the interaction occurred.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "Channel name.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "name"],
+                    "type": "object"
+                  },
+                  "container": {
+                    "description": "Information about the message container.",
+                    "properties": {
+                      "message_ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "Container type (usually 'message').",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["type", "message_ts"],
+                    "type": "object"
+                  },
+                  "message": {
+                    "description": "The message that contains the interactive element.",
+                    "type": "object"
+                  },
+                  "response_url": {
+                    "description": "URL that can be used to respond to the interaction.",
+                    "type": "string"
+                  },
+                  "team": {
+                    "description": "Information about the workspace.",
+                    "properties": {
+                      "domain": {
+                        "description": "Workspace domain.",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "domain"],
+                    "type": "object"
+                  },
+                  "trigger_id": {
+                    "description": "A temporary token to open modals or other interactive elements.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "The type of interaction (e.g., 'block_actions', 'interactive_message', 'view_submission').",
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "Information about the user who performed the interaction.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack user (e.g., U0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The user's display name.",
+                        "type": "string"
+                      },
+                      "team_id": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "username": {
+                        "description": "The user's username.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "username", "name", "team_id"],
+                    "type": "object"
+                  }
+                },
+                "required": ["type", "user", "trigger_id", "team", "channel"],
+                "type": "object"
+              }
+            },
+            "sent": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the interactive message has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The complete message object as returned by Slack's chat.postMessage API.",
+                    "properties": {
+                      "app_id": {
+                        "description": "ID of a Slack App (e.g., A0123ABC).",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                        "items": {
+                          "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "ID of a bot user (e.g., B0123ABC).",
+                        "type": "string"
+                      },
+                      "bot_profile": {
+                        "description": "Profile information for the bot user that posted the message.",
+                        "properties": {
+                          "app_id": {
+                            "description": "The App ID associated with this bot (same as the outer app_id if present).",
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "description": "Indicates if the bot user is deleted.",
+                            "type": "boolean"
+                          },
+                          "icons": {
+                            "description": "URLs for the bot's avatar images.",
+                            "properties": {
+                              "image_36": {
+                                "description": "URL for 36x36px icon.",
+                                "type": "string"
+                              },
+                              "image_48": {
+                                "description": "URL for 48x48px icon.",
+                                "type": "string"
+                              },
+                              "image_72": {
+                                "description": "URL for 72x72px icon.",
+                                "type": "string"
+                              }
+                            },
+                            "required": ["image_36", "image_48", "image_72"],
+                            "type": "object"
+                          },
+                          "id": {
+                            "description": "Bot ID (same as the outer bot_id if present).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Display name of the bot.",
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "description": "The Team ID (workspace ID) this bot belongs to (same as the outer team if present).",
+                            "type": "string"
+                          },
+                          "updated": {
+                            "description": "Timestamp (Unix epoch) of the last profile update.",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "deleted",
+                          "name",
+                          "updated",
+                          "app_id",
+                          "icons",
+                          "team_id"
+                        ],
+                        "type": "object"
+                      },
+                      "parent_user_id": {
+                        "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "Optional. Indicates a subtype of message, e.g., 'bot_message'.",
+                        "type": "string"
+                      },
+                      "team": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "text": {
+                        "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                        "type": "string"
+                      },
+                      "thread_ts": {
+                        "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the object, always 'message'.",
+                        "enum": ["message"],
+                        "type": "string"
+                      },
+                      "user": {
+                        "description": "The user ID of the sender. For messages sent by a bot token, this is the bot's user ID.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "ts",
+                      "text",
+                      "user",
+                      "bot_id",
+                      "app_id",
+                      "team",
+                      "bot_profile",
+                      "blocks"
+                    ],
+                    "type": "object"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel", "message"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "sent",
+            "outputCustomizationExpr": null
+          },
+          {
+            "outputKey": "interaction",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "blocks": {
+                  "code": "[\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\"\n    }\n  },\n  {\n    \"type\": \"actions\",\n    \"elements\": [\n      {\n        \"type\": \"button\",\n        \"text\": {\n          \"type\": \"plain_text\",\n          \"text\": \"red\",\n          \"emoji\": true\n        },\n        \"value\": \"red_button_clicked\",\n        \"action_id\": \"red_button\"\n      },\n      {\n        \"type\": \"button\",\n        \"text\": {\n          \"type\": \"plain_text\",\n          \"text\": \"blue\",\n          \"emoji\": true\n        },\n        \"value\": \"blue_button_clicked\",\n        \"action_id\": \"blue_button\"\n      }\n    ]\n  }\n]"
+                },
+                "channelId": {
+                  "code": "ref(\"signal.captureTestChannel.value\")"
+                },
+                "text": {
+                  "code": "\"test\""
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_25",
+      "nameComponent": {
+        "name": "Button Click Modal",
+        "description": "This entity opens a modal view that displays information about which button was clicked and provides an OK button for user confirmation."
+      },
+      "positionComponent": {
+        "position": {
+          "x": 1916,
+          "y": 561
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "openViewWithInteractions",
+        "schema": {
+          "order": 23,
+          "name": "Open View With Interactions",
+          "category": "Views",
+          "description": "Opens a modal view with Block Kit blocks and listens for user interactions (form submissions, view closed events).",
+          "config": {},
+          "hasOnInternalMessage": true,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Open",
+              "description": "Trigger opening the interactive view.",
+              "config": {
+                "blocks": {
+                  "order": 2,
+                  "name": "Blocks",
+                  "description": "Array of Block Kit blocks to display in the modal.",
+                  "type": {
+                    "items": {
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "callbackId": {
+                  "order": 5,
+                  "name": "Callback ID",
+                  "description": "An identifier you can use to identify this particular view.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "clearOnClose": {
+                  "order": 7,
+                  "name": "Clear on Close",
+                  "description": "When true, clicking the close button will clear all views in the modal stack.",
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "close": {
+                  "order": 4,
+                  "name": "Close Button Text",
+                  "description": "Optional close button text (max 24 characters).",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "externalId": {
+                  "order": 9,
+                  "name": "External ID",
+                  "description": "A unique external ID for the view (max 255 characters).",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "notifyOnClose": {
+                  "order": 8,
+                  "name": "Notify on Close",
+                  "description": "When true, Slack will send a view_closed event when the modal is closed.",
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "privateMetadata": {
+                  "order": 6,
+                  "name": "Private Metadata",
+                  "description": "Private data that will be passed to interaction payloads (max 3000 characters).",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "submit": {
+                  "order": 3,
+                  "name": "Submit Button Text",
+                  "description": "Optional submit button text (max 24 characters).",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "title": {
+                  "order": 1,
+                  "name": "Title",
+                  "description": "The title text of the modal (max 24 characters).",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "default": "Title",
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "triggerId": {
+                  "order": 0,
+                  "name": "Trigger ID",
+                  "description": "The trigger_id received from a Slack interaction (button click, slash command, etc.). Required to open a modal.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "interaction": {
+              "order": 1,
+              "name": "View Interaction",
+              "description": "Emitted when a user interacts with the view (submits form, closes modal, etc.).",
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "description": "Slack view interaction payload containing details about the user action.",
+                "properties": {
+                  "api_app_id": {
+                    "description": "The app ID of the app that opened the view.",
+                    "type": "string"
+                  },
+                  "response_urls": {
+                    "description": "Array of response URLs that can be used to send messages.",
+                    "items": {
+                      "properties": {
+                        "channel_id": {
+                          "type": "string"
+                        },
+                        "response_url": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "team": {
+                    "description": "Information about the workspace.",
+                    "properties": {
+                      "domain": {
+                        "description": "Workspace domain.",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "domain"],
+                    "type": "object"
+                  },
+                  "token": {
+                    "description": "A verification token (deprecated, use signing secret instead).",
+                    "type": "string"
+                  },
+                  "trigger_id": {
+                    "description": "A temporary token that can be used to open another modal.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "The type of view interaction.",
+                    "enum": ["view_submission", "view_closed"],
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "Information about the user who performed the interaction.",
+                    "properties": {
+                      "id": {
+                        "description": "ID of a Slack user (e.g., U0123ABC).",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The user's display name.",
+                        "type": "string"
+                      },
+                      "team_id": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "username": {
+                        "description": "The user's username.",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "username", "name", "team_id"],
+                    "type": "object"
+                  },
+                  "view": {
+                    "description": "The view object at the time of interaction.",
+                    "properties": {
+                      "blocks": {
+                        "items": {
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "callback_id": {
+                        "type": "string"
+                      },
+                      "clear_on_close": {
+                        "type": "boolean"
+                      },
+                      "external_id": {
+                        "type": "string"
+                      },
+                      "hash": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "The view ID.",
+                        "type": "string"
+                      },
+                      "notify_on_close": {
+                        "type": "boolean"
+                      },
+                      "private_metadata": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "description": "The submitted form values (for view_submission).",
+                        "properties": {
+                          "values": {
+                            "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "title": {
+                        "type": "object"
+                      },
+                      "type": {
+                        "enum": ["modal"],
+                        "type": "string"
+                      }
+                    },
+                    "required": ["id", "type", "state", "hash"],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "type",
+                  "user",
+                  "api_app_id",
+                  "token",
+                  "team",
+                  "view"
+                ],
+                "type": "object"
+              }
+            },
+            "opened": {
+              "order": 0,
+              "name": "View Opened",
+              "description": "Emitted when the modal view has been successfully opened.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "view": {
+                    "description": "The opened view object as returned by Slack.",
+                    "properties": {
+                      "app_id": {
+                        "description": "The app ID that opened the view.",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "The blocks that were rendered in the view.",
+                        "items": {
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "The bot ID associated with the app.",
+                        "type": "string"
+                      },
+                      "callback_id": {
+                        "description": "The callback ID if one was provided.",
+                        "type": "string"
+                      },
+                      "clear_on_close": {
+                        "description": "Whether the view stack clears on close.",
+                        "type": "boolean"
+                      },
+                      "external_id": {
+                        "description": "The external ID if one was provided.",
+                        "type": "string"
+                      },
+                      "hash": {
+                        "description": "A unique value for this view state.",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "The unique ID of the view.",
+                        "type": "string"
+                      },
+                      "notify_on_close": {
+                        "description": "Whether view_closed events are sent.",
+                        "type": "boolean"
+                      },
+                      "private_metadata": {
+                        "description": "The private metadata that was included.",
+                        "type": "string"
+                      },
+                      "root_view_id": {
+                        "description": "The root view ID if this is part of a view stack.",
+                        "type": "string"
+                      },
+                      "state": {
+                        "description": "The current state of the view's interactive components.",
+                        "properties": {
+                          "values": {
+                            "description": "Map of block IDs to their current values.",
+                            "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "team_id": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "title": {
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": {
+                        "description": "The type of view.",
+                        "enum": ["modal"],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "team_id",
+                      "type",
+                      "title",
+                      "blocks",
+                      "state",
+                      "hash"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": ["view"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "opened",
+            "outputCustomizationExpr": null
+          },
+          {
+            "outputKey": "interaction",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "blocks": {
+                  "code": "[{\n  \"type\": \"section\",\n  \"text\": {\n    \"type\": \"mrkdwn\",\n    \"text\": `${outputs.sendMessageWithInteractions.actions[0].action_id} clicked by *${outputs.sendMessageWithInteractions.user.name}* in #${outputs.sendMessageWithInteractions.channel.name}`\n  }\n}]"
+                },
+                "callbackId": {
+                  "code": "\"button_click_confirmation\""
+                },
+                "submit": {
+                  "code": "\"OK\""
+                },
+                "title": {
+                  "code": "\"Button Clicked\""
+                },
+                "triggerId": {
+                  "code": "outputs.sendMessageWithInteractions.trigger_id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_26",
+      "nameComponent": {
+        "name": "View Submission Confirmation",
+        "description": "This entity sends an ephemeral confirmation message to the user who submitted a modal view, confirming their action on a test channel."
+      },
+      "positionComponent": {
+        "position": {
+          "x": 1916,
+          "y": 730
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendEphemeralMessageBlocks",
+        "schema": {
+          "order": 3,
+          "name": "Send Ephemeral Message Blocks",
+          "category": "Messaging",
+          "description": "Sends a message with Block Kit blocks to a Slack channel that is only visible to a specific user.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the ephemeral message.",
+              "config": {
+                "blocks": {
+                  "order": 2,
+                  "name": "Message Blocks",
+                  "description": "JSON array of Slack Block Kit blocks for the message content.",
+                  "type": {},
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 3,
+                  "name": "Fallback Text",
+                  "description": "Plain text fallback for the message, used in notifications and when blocks cannot be displayed.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "userId": {
+                  "order": 1,
+                  "name": "User ID",
+                  "description": "ID of the user (e.g., U0123ABC) who should see the ephemeral message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the ephemeral message has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message_ts": {
+                    "description": "Timestamp of the ephemeral message that was sent.",
+                    "type": "string"
+                  },
+                  "user": {
+                    "description": "ID of a Slack user (e.g., U0123ABC).",
+                    "type": "string"
+                  }
+                },
+                "required": ["message_ts", "channel", "user"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "blocks": {
+                  "code": "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": \":white_check_mark: *View Submitted Successfully*\\n\\nYour modal view has been submitted and processed. Thank you for your input!\"}}]"
+                },
+                "channelId": {
+                  "code": "ref(\"signal.captureTestChannel.value\")"
+                },
+                "text": {
+                  "code": "\"View submitted successfully! Your action has been confirmed.\""
+                },
+                "userId": {
+                  "code": "outputs.buttonClickModal.user.id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_27",
+      "nameComponent": {
+        "name": "View Submission Confirmation DM",
+        "description": "This entity sends a direct message confirmation to the user after they submit a view/modal, letting them know their submission was received."
+      },
+      "positionComponent": {
+        "position": {
+          "x": 2177,
+          "y": 730
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendTextMessage",
+        "schema": {
+          "order": 1,
+          "name": "Send Text Message",
+          "category": "Messaging",
+          "description": "Sends a simple markdown-formatted text message to a Slack channel or user. Can optionally be a thread reply.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel or User ID",
+                  "description": "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 1,
+                  "name": "Message Text",
+                  "description": "The text of the message. Markdown is supported by default.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "threadTs": {
+                  "order": 2,
+                  "name": "Thread Timestamp",
+                  "description": "If replying to a message, provide the 'ts' (timestamp) of the parent message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the message has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The complete message object as returned by Slack's chat.postMessage API. Contains details about the message that was posted.",
+                    "properties": {
+                      "app_id": {
+                        "description": "ID of a Slack App (e.g., A0123ABC).",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                        "items": {
+                          "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "ID of a bot user (e.g., B0123ABC).",
+                        "type": "string"
+                      },
+                      "bot_profile": {
+                        "description": "Profile information for the bot user that posted the message.",
+                        "properties": {
+                          "app_id": {
+                            "description": "The App ID associated with this bot (same as the outer app_id if present).",
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "description": "Indicates if the bot user is deleted.",
+                            "type": "boolean"
+                          },
+                          "icons": {
+                            "description": "URLs for the bot's avatar images.",
+                            "properties": {
+                              "image_36": {
+                                "description": "URL for 36x36px icon.",
+                                "type": "string"
+                              },
+                              "image_48": {
+                                "description": "URL for 48x48px icon.",
+                                "type": "string"
+                              },
+                              "image_72": {
+                                "description": "URL for 72x72px icon.",
+                                "type": "string"
+                              }
+                            },
+                            "required": ["image_36", "image_48", "image_72"],
+                            "type": "object"
+                          },
+                          "id": {
+                            "description": "Bot ID (same as the outer bot_id if present).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Display name of the bot.",
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "description": "The Team ID (workspace ID) this bot belongs to (same as the outer team if present).",
+                            "type": "string"
+                          },
+                          "updated": {
+                            "description": "Timestamp (Unix epoch) of the last profile update.",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "deleted",
+                          "name",
+                          "updated",
+                          "app_id",
+                          "icons",
+                          "team_id"
+                        ],
+                        "type": "object"
+                      },
+                      "parent_user_id": {
+                        "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "Optional. Indicates a subtype of message, e.g., 'bot_message'. For messages sent by this block, it's often 'bot_message'.",
+                        "type": "string"
+                      },
+                      "team": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "text": {
+                        "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                        "type": "string"
+                      },
+                      "thread_ts": {
+                        "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the object, always 'message'.",
+                        "enum": ["message"],
+                        "type": "string"
+                      },
+                      "user": {
+                        "description": "The user ID of the sender. For messages sent by a bot token, this is the bot's user ID.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "ts",
+                      "text",
+                      "user",
+                      "bot_id",
+                      "app_id",
+                      "team",
+                      "bot_profile"
+                    ],
+                    "type": "object"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel", "message"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.buttonClickModal.user.id"
+                },
+                "text": {
+                  "code": "\"Thanks for your submission! We've received your information and will process it shortly.\""
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sleep_1",
+      "nameComponent": { "name": "Sleep", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 527
+        }
+      },
+      "coreEntityComponent": {
+        "sleep": {
+          "sleepExpr": {
+            "code": "2"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "appEntity_28",
+      "nameComponent": {
+        "name": "Update Echo Message",
+        "description": "This entity updates a previously sent Slack message by appending '(updated after sleep)' to its original content."
+      },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 675
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "updateMessageBlocks",
+        "schema": {
+          "order": 4,
+          "name": "Update Message Blocks",
+          "category": "Messaging",
+          "description": "Updates an existing Slack message with new Block Kit blocks.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Update",
+              "description": "Trigger updating the message with new blocks.",
+              "config": {
+                "blocks": {
+                  "order": 2,
+                  "name": "New Message Blocks",
+                  "description": "The new Slack Block Kit blocks to replace the message content, as a JSON array.",
+                  "type": {
+                    "items": {
+                      "description": "A Slack Block Kit block object.",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) containing the message to update.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 3,
+                  "name": "Fallback Text",
+                  "description": "Fallback text to display in notifications and for accessibility. Should summarize the content of your blocks.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "ts": {
+                  "order": 1,
+                  "name": "Message Timestamp",
+                  "description": "Timestamp (ts) of the message to update.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Updated",
+              "description": "Emitted when the message has been successfully updated.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "blocks": {
+                    "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                    "items": {
+                      "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "The text content of the updated message.",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "blocks": {
+                  "code": "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": outputs.echo.message.text + \" (updated after sleep)\"}}]"
+                },
+                "channelId": {
+                  "code": "outputs.echo.channel"
+                },
+                "text": {
+                  "code": "outputs.echo.message.text + \" (updated after sleep)\""
+                },
+                "ts": {
+                  "code": "outputs.echo.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sleep_2",
+      "nameComponent": { "name": "Sleep", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 822
+        }
+      },
+      "coreEntityComponent": {
+        "sleep": {
+          "sleepExpr": {
+            "code": "2"
+          }
+        }
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "appEntity_29",
+      "nameComponent": { "name": "Delete Message", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 364,
+          "y": 966
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "deleteMessage",
+        "schema": {
+          "order": 5,
+          "name": "Delete Message",
+          "category": "Messaging",
+          "description": "Deletes a message from a Slack channel using its channel ID and timestamp.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Delete",
+              "description": "Trigger deletion of the specified message.",
+              "config": {
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel ID",
+                  "description": "ID of the channel (e.g., C0123ABC) where the message is located.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "ts": {
+                  "order": 1,
+                  "name": "Message Timestamp",
+                  "description": "The timestamp (ts) of the message to delete.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Deleted",
+              "description": "Emitted when the message has been successfully deleted.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["channel", "ts"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "channelId": {
+                  "code": "outputs.echo.channel"
+                },
+                "ts": {
+                  "code": "outputs.echo.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "appEntity_30",
+      "nameComponent": { "name": "Send Message Blocks", "description": "" },
+      "positionComponent": {
+        "position": {
+          "x": 67,
+          "y": 687
+        }
+      },
+      "appEntityComponent": {
+        "appInstallationId": "019716cf-750c-7496-a0ac-ea966ca62c77",
+        "blockKey": "sendMessageBlocks",
+        "schema": {
+          "order": 2,
+          "name": "Send Message Blocks",
+          "category": "Messaging",
+          "description": "Sends a message to a Slack channel or user with a JSON list of Block Kit blocks. Can optionally be a thread reply.",
+          "config": {},
+          "hasOnInternalMessage": false,
+          "inputs": {
+            "default": {
+              "order": 0,
+              "name": "Send",
+              "description": "Trigger sending the message with blocks.",
+              "config": {
+                "blocks": {
+                  "order": 1,
+                  "name": "Message Blocks",
+                  "description": "The Slack Block Kit blocks to include in the message, as a JSON array.",
+                  "type": {
+                    "items": {
+                      "description": "A Slack Block Kit block object.",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "channelId": {
+                  "order": 0,
+                  "name": "Channel or User ID",
+                  "description": "ID of the channel (e.g., C0123ABC), DM (D0123ABC), or user (U0123ABC) to send the message to.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": true,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "text": {
+                  "order": 2,
+                  "name": "Fallback Text",
+                  "description": "Fallback text to display in notifications and for accessibility. Should summarize the content of your blocks.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                },
+                "threadTs": {
+                  "order": 3,
+                  "name": "Thread Timestamp",
+                  "description": "If replying to a message, provide the 'ts' (timestamp) of the parent message.",
+                  "type": {
+                    "type": "string"
+                  },
+                  "fixed": false,
+                  "required": false,
+                  "hasValidator": false,
+                  "fieldKey": ""
+                }
+              },
+              "hasOnEvent": true
+            }
+          },
+          "outputs": {
+            "default": {
+              "order": 0,
+              "name": "Message Sent",
+              "description": "Emitted when the message with blocks has been successfully sent.",
+              "default": true,
+              "possiblePrimaryParents": ["default"],
+              "type": {
+                "properties": {
+                  "channel": {
+                    "description": "ID of a Slack channel (e.g., C0123ABC), private group (G0123ABC), or direct message (D0123ABC).",
+                    "type": "string"
+                  },
+                  "message": {
+                    "description": "The complete message object as returned by Slack's chat.postMessage API. Contains details about the message that was posted.",
+                    "properties": {
+                      "app_id": {
+                        "description": "ID of a Slack App (e.g., A0123ABC).",
+                        "type": "string"
+                      },
+                      "blocks": {
+                        "description": "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+                        "items": {
+                          "description": "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "bot_id": {
+                        "description": "ID of a bot user (e.g., B0123ABC).",
+                        "type": "string"
+                      },
+                      "bot_profile": {
+                        "description": "Profile information for the bot user that posted the message.",
+                        "properties": {
+                          "app_id": {
+                            "description": "The App ID associated with this bot (same as the outer app_id if present).",
+                            "type": "string"
+                          },
+                          "deleted": {
+                            "description": "Indicates if the bot user is deleted.",
+                            "type": "boolean"
+                          },
+                          "icons": {
+                            "description": "URLs for the bot's avatar images.",
+                            "properties": {
+                              "image_36": {
+                                "description": "URL for 36x36px icon.",
+                                "type": "string"
+                              },
+                              "image_48": {
+                                "description": "URL for 48x48px icon.",
+                                "type": "string"
+                              },
+                              "image_72": {
+                                "description": "URL for 72x72px icon.",
+                                "type": "string"
+                              }
+                            },
+                            "required": ["image_36", "image_48", "image_72"],
+                            "type": "object"
+                          },
+                          "id": {
+                            "description": "Bot ID (same as the outer bot_id if present).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Display name of the bot.",
+                            "type": "string"
+                          },
+                          "team_id": {
+                            "description": "The Team ID (workspace ID) this bot belongs to (same as the outer team if present).",
+                            "type": "string"
+                          },
+                          "updated": {
+                            "description": "Timestamp (Unix epoch) of the last profile update.",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "deleted",
+                          "name",
+                          "updated",
+                          "app_id",
+                          "icons",
+                          "team_id"
+                        ],
+                        "type": "object"
+                      },
+                      "parent_user_id": {
+                        "description": "Optional. The user ID of the author of the parent message, if this message is a reply in a thread.",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "Optional. Indicates a subtype of message, e.g., 'bot_message'. For messages sent by this block, it's often 'bot_message'.",
+                        "type": "string"
+                      },
+                      "team": {
+                        "description": "ID of a Slack workspace (team) (e.g., T0123ABC).",
+                        "type": "string"
+                      },
+                      "text": {
+                        "description": "The textual content of the message. Markdown is supported by default in many contexts.",
+                        "type": "string"
+                      },
+                      "thread_ts": {
+                        "description": "Optional. The timestamp of the parent message, if this message is part of a thread. If this message starts a new thread by replying to an existing message, this field will be present. If it's a brand new message not in a thread, this field is usually absent unless it becomes the parent of a new thread, in which case `thread_ts` would equal `ts`.",
+                        "type": "string"
+                      },
+                      "ts": {
+                        "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "The type of the object, always 'message'.",
+                        "enum": ["message"],
+                        "type": "string"
+                      },
+                      "user": {
+                        "description": "The user ID of the sender. For messages sent by a bot token, this is the bot's user ID.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "ts",
+                      "text",
+                      "user",
+                      "bot_id",
+                      "app_id",
+                      "team",
+                      "bot_profile",
+                      "blocks"
+                    ],
+                    "type": "object"
+                  },
+                  "ts": {
+                    "description": "Timestamp of the message. This value is effectively the ID of the message in Slack's API and is used to reference it in other operations (e.g., updating, deleting, threading).",
+                    "type": "string"
+                  }
+                },
+                "required": ["ts", "channel", "message"],
+                "type": "object"
+              }
+            }
+          },
+          "signals": {},
+          "hasOnSync": false,
+          "hasOnDrain": false,
+          "hasOnTimer": false
+        },
+        "configExprs": {}
+      },
+      "eventProcessingComponent": {
+        "active": true,
+        "outputs": [
+          {
+            "outputKey": "default",
+            "outputCustomizationExpr": null
+          }
+        ],
+        "appBlock": {
+          "inputs": [
+            {
+              "inputKey": "default",
+              "configExprs": {
+                "blocks": {
+                  "code": "[\n  {\n    \"type\": \"section\",\n    \"text\": {\n      \"type\": \"mrkdwn\",\n      \"text\": \"this message shall stay: \" + outputs.echo.message.text\n    }\n  }\n]"
+                },
+                "channelId": {
+                  "code": "outputs.echo.channel"
+                },
+                "threadTs": {
+                  "code": "outputs.echo.ts"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "blockLinks": [
+    {
+      "fromEntityId": "appEntity_0",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_1",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_1",
+      "fromOutputKey": "default",
+      "toEntityId": "sleep_1",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_2",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_4",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_4",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_5",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_5",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_13",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_6",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_7",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_7",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_8",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_8",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_9",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_9",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_10",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_10",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_11",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_11",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_12",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_13",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_6",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_14",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_18",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_15",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_16",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_15",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_17",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_18",
+      "fromOutputKey": "default",
+      "toEntityId": "sleep_0",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_19",
+      "fromOutputKey": "default",
+      "toEntityId": "condition_0",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "condition_0",
+      "fromOutputKey": "then",
+      "toEntityId": "appEntity_23",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "sleep_0",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_22",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_23",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_21",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_24",
+      "fromOutputKey": "interaction",
+      "toEntityId": "appEntity_25",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_25",
+      "fromOutputKey": "interaction",
+      "toEntityId": "appEntity_26",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_25",
+      "fromOutputKey": "interaction",
+      "toEntityId": "appEntity_27",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "sleep_1",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_28",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "sleep_1",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_30",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "appEntity_28",
+      "fromOutputKey": "default",
+      "toEntityId": "sleep_2",
+      "toInputKey": "default"
+    },
+    {
+      "fromEntityId": "sleep_2",
+      "fromOutputKey": "default",
+      "toEntityId": "appEntity_29",
+      "toInputKey": "default"
+    }
+  ],
+  "exportedFrom": "00000000-0000-0000-0000-000000000000"
+}
