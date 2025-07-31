@@ -1,4 +1,4 @@
-import { defineApp, http, kv, lifecycle } from "@slflows/sdk/v1";
+import { defineApp, http, lifecycle } from "@slflows/sdk/v1";
 
 import sendTextMessage from "./blocks/sendTextMessage.ts";
 import {
@@ -41,6 +41,8 @@ import { openViewWithInteractions } from "./blocks/views.ts";
 import { conversation } from "./blocks/conversation.ts";
 import { botThread } from "./blocks/botThread.ts";
 
+const slackAppCreationPromptKey = "slackAppCreationPrompt";
+
 export const app = defineApp({
   name: "Slack",
   installationInstructions:
@@ -77,6 +79,7 @@ export const app = defineApp({
 
   async onSync(input) {
     const { slackBotToken, slackSigningSecret } = input.app.config;
+    const promptExists = slackAppCreationPromptKey in input.app.prompts;
 
     if (slackBotToken && slackSigningSecret) {
       try {
@@ -89,16 +92,14 @@ export const app = defineApp({
         });
         const data = await response.json();
         if (data.ok) {
-          const oldPromptKv = await kv.app.get("configPromptId");
-          if (oldPromptKv && oldPromptKv.value) {
+          if (promptExists) {
             try {
-              await lifecycle.prompt.delete(oldPromptKv.value as string);
+              await lifecycle.prompt.delete(slackAppCreationPromptKey);
             } catch (e: any) {
               console.warn(
-                `Failed to delete old prompt ${oldPromptKv.value}: ${e.message}`,
+                `Failed to delete old prompt ${slackAppCreationPromptKey}: ${e.message}`,
               );
             }
-            await kv.app.delete(["configPromptId"]);
           }
           return {
             newStatus: "ready",
@@ -124,10 +125,6 @@ export const app = defineApp({
         };
       }
     } else {
-      let promptId = (await kv.app.get("configPromptId"))?.value as
-        | string
-        | undefined;
-
       const eventsUrl = `${input.app.http.url}/events`;
       const interactivityUrl = `${input.app.http.url}/interactivity`;
 
@@ -209,14 +206,17 @@ To complete the Slack app setup:
 5.  **Get Signing Secret**: Navigate to "Basic Information" (under Settings in the sidebar). Scroll down to "App Credentials" and copy the "**Signing Secret**".
 6.  **Update Configuration**: Paste the "Bot User OAuth Token" and "Signing Secret" into this Spacelift App's configuration fields and save.
 `;
-      if (!promptId) {
-        promptId = await lifecycle.prompt.create(promptDescription, {
-          redirect: {
-            url: slackAppCreationUrl,
-            method: "GET",
+      if (!promptExists) {
+        await lifecycle.prompt.create(
+          slackAppCreationPromptKey,
+          promptDescription,
+          {
+            redirect: {
+              url: slackAppCreationUrl,
+              method: "GET",
+            },
           },
-        });
-        await kv.app.set({ key: "configPromptId", value: promptId });
+        );
       }
       return {
         newStatus: "in_progress",
