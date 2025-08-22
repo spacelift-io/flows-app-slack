@@ -2,11 +2,12 @@ import { AppBlock, events, kv, EventInput } from "@slflows/sdk/v1";
 import { callSlackApi } from "../slackClient.ts";
 import { messagesSubscription } from "./subscriptions.ts";
 import sendMessageBlocks from "./sendMessageBlocks.ts";
+import { slackBlocksSchema } from "../jsonschema/jsonschema.ts";
 
 export const botThread: AppBlock = {
   name: "Bot Thread",
   description:
-    "Bot-initiated thread management. Allows starting a thread with a message " +
+    "Bot-initiated thread management. Allows starting a thread with Slack Block Kit blocks " +
     "and continuing the conversation. Tracks replies from users and emits bot " +
     "messages with thread context.",
   category: "Conversations",
@@ -32,7 +33,8 @@ export const botThread: AppBlock = {
   inputs: {
     start: {
       name: "Start",
-      description: "Start a new thread by posting the first message.",
+      description:
+        "Start a new thread by posting the first message with Block Kit blocks.",
       config: {
         channelId: {
           name: "Channel ID",
@@ -43,16 +45,24 @@ export const botThread: AppBlock = {
         },
         message: {
           name: "Message",
-          description: "The initial message content in Markdown format.",
+          description:
+            "The initial message content in Markdown format. Used if blocks are not provided.",
           type: "string",
-          required: true,
+          required: false,
+        },
+        blocks: {
+          name: "Message Blocks",
+          description:
+            "Optional Slack Block Kit blocks to include in the message, as a JSON array. If provided, takes precedence over the message field. Common examples: [{type: 'section', text: {type: 'mrkdwn', text: 'Hello *world*!'}}] for text, [{type: 'divider'}] for separator, [{type: 'actions', elements: [{type: 'button', text: {type: 'plain_text', text: 'Click me'}, action_id: 'click'}]}] for buttons.",
+          type: slackBlocksSchema,
+          required: false,
         },
       },
       onEvent: handleStart,
     },
     reply: {
       name: "Reply",
-      description: "Reply to an existing thread.",
+      description: "Reply to an existing thread with Block Kit blocks.",
       config: {
         channelId: {
           name: "Channel ID",
@@ -69,9 +79,17 @@ export const botThread: AppBlock = {
         },
         message: {
           name: "Message",
-          description: "The reply message content in Markdown format.",
+          description:
+            "The reply message content in Markdown format. Used if blocks are not provided.",
           type: "string",
-          required: true,
+          required: false,
+        },
+        blocks: {
+          name: "Message Blocks",
+          description:
+            "Optional Slack Block Kit blocks to include in the reply, as a JSON array. If provided, takes precedence over the message field.",
+          type: slackBlocksSchema,
+          required: false,
         },
       },
       onEvent: handleReply,
@@ -128,7 +146,11 @@ export const botThread: AppBlock = {
 };
 
 async function handleStart(input: EventInput) {
-  const { channelId: inputChannelId, message } = input.event.inputConfig;
+  const {
+    channelId: inputChannelId,
+    blocks,
+    message,
+  } = input.event.inputConfig;
   const { channelId: blockChannelId } = input.block.config;
   const { slackBotToken } = input.app.config;
 
@@ -145,16 +167,29 @@ async function handleStart(input: EventInput) {
     );
   }
 
-  // Convert markdown to Slack blocks
-  const blocks = [{ type: "section", text: { type: "mrkdwn", text: message } }];
+  if (!blocks && !message) {
+    throw new Error("Either blocks or message must be provided.");
+  }
+
+  const slackApiPayload: Record<string, any> = {
+    channel: channelId,
+  };
+
+  if (blocks) {
+    // Use blocks if provided
+    slackApiPayload.blocks = blocks;
+    slackApiPayload.text = "Message with blocks";
+  } else {
+    // Fall back to markdown message converted to blocks
+    slackApiPayload.blocks = [
+      { type: "section", text: { type: "mrkdwn", text: message } },
+    ];
+    slackApiPayload.text = message;
+  }
 
   const responseData = await callSlackApi(
     "chat.postMessage",
-    {
-      channel: channelId,
-      text: message, // Fallback text
-      blocks: blocks,
-    },
+    slackApiPayload,
     slackBotToken,
   );
 
@@ -182,6 +217,7 @@ async function handleReply(input: EventInput) {
   const {
     channelId: inputChannelId,
     threadTs,
+    blocks,
     message,
   } = input.event.inputConfig;
   const { channelId: blockChannelId } = input.block.config;
@@ -200,17 +236,30 @@ async function handleReply(input: EventInput) {
     );
   }
 
-  // Convert markdown to Slack blocks
-  const blocks = [{ type: "section", text: { type: "mrkdwn", text: message } }];
+  if (!blocks && !message) {
+    throw new Error("Either blocks or message must be provided.");
+  }
+
+  const slackApiPayload: Record<string, any> = {
+    channel: channelId,
+    thread_ts: threadTs,
+  };
+
+  if (blocks) {
+    // Use blocks if provided
+    slackApiPayload.blocks = blocks;
+    slackApiPayload.text = "Message with blocks";
+  } else {
+    // Fall back to markdown message converted to blocks
+    slackApiPayload.blocks = [
+      { type: "section", text: { type: "mrkdwn", text: message } },
+    ];
+    slackApiPayload.text = message;
+  }
 
   const responseData = await callSlackApi(
     "chat.postMessage",
-    {
-      channel: channelId,
-      text: message, // Fallback text
-      blocks: blocks,
-      thread_ts: threadTs,
-    },
+    slackApiPayload,
     slackBotToken,
   );
 

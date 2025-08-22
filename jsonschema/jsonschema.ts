@@ -1,3 +1,5 @@
+import type { JsonSchema } from "@slflows/sdk/v1";
+
 export const slackMessageTimestampSchema = {
   type: "string",
   description:
@@ -30,15 +32,297 @@ export const slackBotIdSchema = {
   description: "ID of a bot user (e.g., B0123ABC).",
 };
 
-export const slackBlocksSchema = {
+export const slackBlockKitBlockSchema: JsonSchema = {
+  oneOf: [
+    {
+      type: "object",
+      description:
+        "Section block - displays text alongside optional accessories like buttons, images, or select menus",
+      properties: {
+        type: { type: "string", enum: ["section"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        text: {
+          type: "object",
+          description: "Main text content - required unless fields is provided",
+          properties: {
+            type: { type: "string", enum: ["mrkdwn", "plain_text"] },
+            text: { type: "string" },
+            emoji: {
+              type: "boolean",
+              description: "Parse emojis (plain_text only)",
+            },
+          },
+          required: ["type", "text"],
+        },
+        fields: {
+          type: "array",
+          description: "Array of text objects for multi-column layout (max 10)",
+          items: {
+            type: "object",
+            properties: {
+              type: { type: "string", enum: ["mrkdwn", "plain_text"] },
+              text: { type: "string" },
+              emoji: { type: "boolean" },
+            },
+            required: ["type", "text"],
+          },
+        },
+        accessory: {
+          type: "object",
+          description: "Interactive element (button, select, image, etc.)",
+          properties: {
+            type: {
+              type: "string",
+              enum: [
+                "button",
+                "static_select",
+                "external_select",
+                "users_select",
+                "conversations_select",
+                "channels_select",
+                "overflow",
+                "datepicker",
+                "timepicker",
+                "datetime_select",
+                "image",
+              ],
+            },
+          },
+          required: ["type"],
+        },
+      },
+      required: ["type"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description: "Divider block - creates a visual divider line",
+      properties: {
+        type: { type: "string", enum: ["divider"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+      },
+      required: ["type"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description: "Image block - displays an image",
+      properties: {
+        type: { type: "string", enum: ["image"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        image_url: {
+          type: "string",
+          description: "URL of the image to display",
+        },
+        alt_text: {
+          type: "string",
+          description: "Alt text for accessibility (required)",
+        },
+        title: {
+          type: "object",
+          description: "Optional title displayed below the image",
+          properties: {
+            type: { type: "string", enum: ["plain_text"] },
+            text: { type: "string" },
+            emoji: { type: "boolean" },
+          },
+          required: ["type", "text"],
+        },
+      },
+      required: ["type", "image_url", "alt_text"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description:
+        "Actions block - container for interactive elements like buttons and select menus",
+      properties: {
+        type: { type: "string", enum: ["actions"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        elements: {
+          type: "array",
+          description: "Interactive elements (max 25)",
+          items: {
+            type: "object",
+            properties: {
+              type: {
+                type: "string",
+                enum: [
+                  "button",
+                  "static_select",
+                  "external_select",
+                  "users_select",
+                  "conversations_select",
+                  "channels_select",
+                  "overflow",
+                  "datepicker",
+                  "timepicker",
+                  "datetime_select",
+                ],
+              },
+            },
+            required: ["type"],
+          },
+        },
+      },
+      required: ["type", "elements"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description:
+        "Context block - displays contextual info with small text and images",
+      properties: {
+        type: { type: "string", enum: ["context"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        elements: {
+          type: "array",
+          description: "Mix of text and image elements (max 10)",
+          items: {
+            oneOf: [
+              {
+                type: "object",
+                properties: {
+                  type: { type: "string", enum: ["mrkdwn", "plain_text"] },
+                  text: { type: "string" },
+                  emoji: { type: "boolean" },
+                },
+                required: ["type", "text"],
+              },
+              {
+                type: "object",
+                properties: {
+                  type: { type: "string", enum: ["image"] },
+                  image_url: { type: "string" },
+                  alt_text: { type: "string" },
+                },
+                required: ["type", "image_url", "alt_text"],
+              },
+            ],
+          },
+        },
+      },
+      required: ["type", "elements"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description: "Header block - displays large header text",
+      properties: {
+        type: { type: "string", enum: ["header"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        text: {
+          type: "object",
+          description: "Header text (plain text only)",
+          properties: {
+            type: { type: "string", enum: ["plain_text"] },
+            text: { type: "string" },
+            emoji: { type: "boolean" },
+          },
+          required: ["type", "text"],
+        },
+      },
+      required: ["type", "text"],
+      additionalProperties: false,
+    } as JsonSchema,
+    {
+      type: "object",
+      description: "Input block - collects user input in modals and forms",
+      properties: {
+        type: { type: "string", enum: ["input"] },
+        block_id: {
+          type: "string",
+          description: "Optional unique identifier for the block",
+        },
+        label: {
+          type: "object",
+          description: "Label for the input element",
+          properties: {
+            type: { type: "string", enum: ["plain_text"] },
+            text: { type: "string" },
+            emoji: { type: "boolean" },
+          },
+          required: ["type", "text"],
+        },
+        element: {
+          type: "object",
+          description: "The input element",
+          properties: {
+            type: {
+              type: "string",
+              enum: [
+                "plain_text_input",
+                "email_text_input",
+                "url_text_input",
+                "number_input",
+                "static_select",
+                "multi_static_select",
+                "external_select",
+                "multi_external_select",
+                "users_select",
+                "multi_users_select",
+                "conversations_select",
+                "multi_conversations_select",
+                "channels_select",
+                "multi_channels_select",
+                "datepicker",
+                "timepicker",
+                "datetime_select",
+                "checkboxes",
+                "radio_buttons",
+              ],
+            },
+          },
+          required: ["type"],
+        },
+        hint: {
+          type: "object",
+          description: "Optional hint text",
+          properties: {
+            type: { type: "string", enum: ["plain_text"] },
+            text: { type: "string" },
+            emoji: { type: "boolean" },
+          },
+          required: ["type", "text"],
+        },
+        optional: {
+          type: "boolean",
+          description: "Whether input is optional (default false)",
+        },
+        dispatch_action: {
+          type: "boolean",
+          description: "Whether to dispatch actions on character entry",
+        },
+      },
+      required: ["type", "label", "element"],
+      additionalProperties: false,
+    } as JsonSchema,
+  ],
+};
+
+export const slackBlocksSchema: JsonSchema = {
   type: "array",
-  items: {
-    type: "object",
-    description:
-      "A Slack Block Kit layout block object. Its structure is defined by Slack. For detailed structure, refer to: https://api.slack.com/reference/block-kit/blocks",
-  },
+  items: slackBlockKitBlockSchema,
   description:
-    "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures.",
+    "An array of Slack Block Kit layout blocks. Present if the message was composed using Block Kit or if Slack converted the text to a rich_text block. See Slack documentation for block structures: https://api.slack.com/reference/block-kit/blocks",
 };
 
 export const slackThreadTsSchema = {
