@@ -40,6 +40,7 @@ import { authMetadata } from "./blocks/auth.ts";
 import { openViewWithInteractions } from "./blocks/views.ts";
 import { conversation } from "./blocks/conversation.ts";
 import { botThread } from "./blocks/botThread.ts";
+import { getThread } from "./blocks/getThread.ts";
 
 const slackAppCreationPromptKey = "slackAppCreationPrompt";
 
@@ -322,5 +323,6 @@ To complete the Slack app setup:
     // Conversations
     conversation,
     botThread,
+    getThread,
   },
 });
